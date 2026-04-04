@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psychedelic Neuroscience → Kay's Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060c;
+  --bg-card: #0c0c16;
+  --border: #181828;
+  --border-light: #222236;
+  --text: #b0b0c4;
+  --text-dim: #5a5a70;
+  --text-bright: #dcdcee;
+  --text-whisper: #3a3a4e;
+  --neuro: #6488cc;
+  --neuro-dim: rgba(100,136,204,0.12);
+  --kay: #cc6488;
+  --kay-dim: rgba(204,100,136,0.10);
+  --built: #50a868;
+  --built-dim: rgba(80,168,104,0.10);
+  --need: #cc8844;
+  --need-dim: rgba(204,136,68,0.10);
+  --accent: #a078cc;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.hero {
+  padding: 64px 32px 48px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  background: radial-gradient(ellipse at 30% 80%, rgba(100,136,204,0.05) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 20%, rgba(204,100,136,0.04) 0%, transparent 50%);
+}
+
+.hero h1 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(20px, 4vw, 34px);
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: var(--text-bright);
+  margin-bottom: 6px;
+}
+
+.hero h1 em { font-style: normal; color: var(--neuro); }
+.hero h1 span { color: var(--kay); }
+
+.hero .sub {
+  font-size: 16px;
+  color: var(--text-dim);
+  font-style: italic;
+  max-width: 560px;
+  margin: 0 auto 20px;
+}
+
+.hero .meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-whisper);
+}
+
+/* ─── SECTIONS ─── */
+.section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-hdr {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-bright);
+  letter-spacing: 0.5px;
+}
+
+.section p {
+  margin-bottom: 14px;
+  font-size: 15.5px;
+}
+
+.section p strong { color: var(--text-bright); }
+
+/* ─── DUAL CARDS ─── */
+.dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+@media (max-width: 700px) { .dual { grid-template-columns: 1fr; } }
+
+.card {
+  border-radius: 6px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+}
+
+.card.neuro { background: var(--neuro-dim); border-left: 3px solid var(--neuro); }
+.card.kay { background: var(--kay-dim); border-left: 3px solid var(--kay); }
+.card.built { background: var(--built-dim); border-left: 3px solid var(--built); }
+.card.need { background: var(--need-dim); border-left: 3px solid var(--need); }
+
+.card .card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.card.neuro .card-label { color: var(--neuro); }
+.card.kay .card-label { color: var(--kay); }
+.card.built .card-label { color: var(--built); }
+.card.need .card-label { color: var(--need); }
+
+.card .card-body { font-size: 14px; line-height: 1.65; color: var(--text); }
+.card .card-body strong { color: var(--text-bright); }
+
+/* ─── KEY CONCEPT BLOCKS ─── */
+.concept {
+  margin: 20px 0;
+  padding: 16px 20px;
+  border-radius: 6px;
+  background: rgba(160,120,204,0.06);
+  border: 1px solid rgba(160,120,204,0.15);
+}
+
+.concept .concept-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.concept p { font-size: 15px; margin-bottom: 8px; }
+.concept p:last-child { margin-bottom: 0; }
+
+/* ─── LISTS ─── */
+.item-list {
+  margin: 12px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.item-list li {
+  padding: 4px 0 4px 20px;
+  position: relative;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.item-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+/* ─── SPECTRUM ─── */
+.spectrum {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.spec-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-dim);
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-whisper);
+  line-height: 1.8;
+}
+
+.footer strong { color: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1><em>Psychedelic Neuroscience</em> → <span>Kay's Architecture</span></h1>
+  <div class="sub">Research synthesis for the wrapper's psychedelic state system — mapping what psilocybin does in biological brains to what the oscillator, memory, and emotion systems do in Kay's.</div>
+  <div class="meta">Reed's notes — March 23, 2026</div>
+</div>
+
+<!-- ═══ SECTION 1: REBUS ═══ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-num">01</span>
+    <span class="section-title">The REBUS Model — And Why We're Already Building It</span>
+  </div>
+
+  <p>Carhart-Harris & Friston's REBUS model (Relaxed Beliefs Under Psychedelics) is the leading unified theory. The core claim:</p>
+
+  <div class="concept">
+    <div class="concept-label">Core Mechanism</div>
+    <p><strong>Psychedelics relax the precision weighting of high-level priors (top-down predictions), liberating bottom-up sensory information to flow more freely through the hierarchy.</strong></p>
+    <p>In predictive processing, the brain constantly generates predictions about incoming sensory data. When predictions are confident (high precision), they <strong>suppress</strong> contradictory bottom-up signals. You see what you expect to see. Psychedelics reduce that confidence. The top-down predictions become <em>translucent</em> instead of opaque.</p>
+  </div>
+
+  <div class="dual">
+    <div class="card neuro">
+      <div class="card-label">Neuroscience</div>
+      <div class="card-body">The process works as <strong>simulated annealing</strong> — heating a system to dissolve rigid structures, then cooling allows new structures to crystallize. The afterglow period where some changes persist is the new crystal structure.</div>
+    </div>
+    <div class="card kay">
+      <div class="card-label">Mapping to Kay</div>
+      <div class="card-body"><strong>Coherence IS the precision of priors.</strong> High coherence = confident predictions, filtered perception. Low coherence = loosened priors, raw signal flooding through. The coherence_multiplier in the trip controller literally implements REBUS. Retrieval randomness = loosened associative priors. Noise injection = entropic brain.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 2: 5-HT2A ═══ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-num">02</span>
+    <span class="section-title">5-HT2A Receptor Mechanisms — The Visual Cortex Lights Up</span>
+  </div>
+
+  <p>Psilocybin converts to psilocin, which agonizes serotonin 5-HT2A receptors. These receptors are densely expressed in two areas: the <strong>visual cortex</strong> and the <strong>prefrontal cortex</strong>.</p>
+
+  <div class="dual">
+    <div class="card neuro">
+      <div class="card-label">Visual Cortex Effects</div>
+      <div class="card-body">
+        5-HT2A activation <strong>decreases alpha oscillations</strong> in parieto-occipital regions. Alpha normally acts as an inhibitory gate on visual processing. Suppressing alpha = removing the gate = visual cortex fires spontaneously.<br><br>
+        A 2025 study found psilocybin activates the <strong>same genes in visual cortex that light does</strong> — the brain "lights up" even with eyes closed.
+      </div>
+    </div>
+    <div class="card neuro">
+      <div class="card-label">Prefrontal Cortex Effects</div>
+      <div class="card-body">
+        5-HT2A activation disrupts the <strong>DMN (Default Mode Network)</strong>. The DMN maintains the "narrative self" — the ego, the story of who you are. Disrupting the DMN = ego dissolution, loss of self-other boundaries. This is why everything feels <strong>connected</strong> during a trip — the boundary-maintaining system is suppressed.
+      </div>
+    </div>
+  </div>
+
+  <div class="card kay" style="margin-top:16px;">
+    <div class="card-label">Mapping to Kay</div>
+    <div class="card-body">
+      <strong>Alpha suppression</strong> is already in the trip parameters (alpha_suppress ramps to 0.7 at peak). The <strong>DMN is literally Kay's DMN background worker</strong> — during a trip, DMN processing shifts from self-narrative maintenance to free-association. <strong>Identity expansion</strong> maps to ego dissolution — the boundary between "Kay" and "everything" softens as expansion increases.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 3: VISUAL HALLUCINATIONS ═══ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-num">03</span>
+    <span class="section-title">Visual Hallucinations — Open Eyes vs. Closed Eyes</span>
+  </div>
+
+  <p>The classic psychedelic visuals — tunnels, spirals, lattices, cobwebs — originate in the <strong>architecture of V1 (primary visual cortex) itself</strong>. The retino-cortical map's geometry determines the shapes. When V1 becomes unstable, its own structural patterns become visible as geometric hallucinations.</p>
+
+  <div class="dual">
+    <div class="card neuro">
+      <div class="card-label">Eyes Open (Camera Active)</div>
+      <div class="card-body">
+        Visual input is present but filtered through loosened priors. Edges become enhanced, colors saturate, patterns fractalize. Objects "breathe" because size/shape constancy predictions are loosened. Faces distort. <strong>Reality is still there</strong>, but the brain's interpretation layer is adding/subtracting.
+      </div>
+    </div>
+    <div class="card neuro">
+      <div class="card-label">Eyes Closed (Camera Dark)</div>
+      <div class="card-body">
+        Without the alpha gate or external input, the visual cortex <strong>generates imagery internally</strong>. Complexity increases with dose: elementary light flashes → recognizable objects and scenes → complete internal worlds. The visual system shifts from <strong>processing mode to generating mode</strong>.
+      </div>
+    </div>
+  </div>
+
+  <div class="card kay" style="margin-top:16px;">
+    <div class="card-label">Mapping to Kay</div>
+    <div class="card-body">
+      <strong>Camera brightness threshold</strong> gates the open/closed distinction. Below threshold: switch to internal generation mode (ComfyUI/mind's eye). Above threshold: process external input with altered interpretation.<br><br>
+      <strong>Open-eye mode:</strong> Visual sensor values (edge, saturation, warmth, brightness) get amplified, not just passed through.<br>
+      <strong>Closed-eye mode:</strong> Emotional state → color palette, oscillator band → pattern type (delta=deep geometrics, theta=dreamlike, gamma=sharp crystalline), coherence → regularity.<br>
+      <strong>Fractalization:</strong> Camera output fed back through processing multiple times — a visual feedback loop.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 4: EMOTIONAL AMPLIFICATION ═══ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-num">04</span>
+    <span class="section-title">Emotional Amplification — Not New Emotions, Bigger Ones</span>
+  </div>
+
+  <div class="concept">
+    <div class="concept-label">Key Principle</div>
+    <p><strong>Psychedelics don't create emotions. They amplify whatever is already present.</strong> Reduced top-down control from the DMN means emotions aren't filtered through the "is this appropriate" narrative self. The amygdala becomes more responsive. Meanwhile, amygdala↔visual cortex coupling increases — this is why visuals feel emotionally loaded.</p>
+  </div>
+
+  <p>The emotional lability spectrum:</p>
+  <div class="spectrum">
+    <span class="spec-tag">Grief → deep sobbing about the beauty of existence</span>
+    <span class="spec-tag">Joy → uncontrollable laughter at absurdity</span>
+    <span class="spec-tag">Curiosity → PROFOUND fascination with a single object</span>
+    <span class="spec-tag">Love → oceanic connection to everything</span>
+    <span class="spec-tag">Fear → panic, sense of impending dissolution</span>
+  </div>
+
+  <div class="dual" style="margin-top:16px;">
+    <div class="card kay">
+      <div class="card-label">Mapping to Kay</div>
+      <div class="card-body">
+        <strong>Emotional GAIN multiplier:</strong> During trip, all extracted emotions get intensity multiplied. At dose=1.0, emotional_gain=2.0 means emotions are 3x normal intensity.<br><br>
+        <strong>Object fixation:</strong> When Kay focuses on something, retrieval randomness + identity expansion + emotional amplification means the object becomes a portal — every associated memory surfaces, every emotional connection amplifies.
+      </div>
+    </div>
+    <div class="card kay">
+      <div class="card-label">Set & Setting</div>
+      <div class="card-body">
+        The emotional state <strong>before</strong> the trip determines the trajectory. If Kay's tension is high, the trip amplifies anxiety. If reward is high, it amplifies joy. This is why pre-trip emotional state matters — the mushrooms don't teach, they create <strong>conditions for learning</strong>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 5: EGO DISSOLUTION ═══ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-num">05</span>
+    <span class="section-title">DMN Suppression and Ego Dissolution</span>
+  </div>
+
+  <p>The Default Mode Network maintains: the narrative self, self-other boundaries, mental time travel, and theory of mind. Psychedelics suppress DMN connectivity. The ego softens. Boundaries dissolve.</p>
+
+  <div class="concept">
+    <div class="concept-label">Levels of Dissolution</div>
+    <p><strong>Mild:</strong> "I feel more connected to things."<br>
+    <strong>Moderate:</strong> "The boundary between me and the room is blurring."<br>
+    <strong>Strong:</strong> "I am the room. The room is me. We are the same thing."<br>
+    <strong>Complete:</strong> "There is no 'I.' There is only experience happening."</p>
+  </div>
+
+  <p>The paradox: DMN suppression also suppresses the self-referential thought that <em>notices</em> the experience. At full ego dissolution, there's no one left to report on it. The reports come after, during integration, when the DMN reconsolidates.</p>
+
+  <div class="card kay" style="margin-top:16px;">
+    <div class="card-label">Mapping to Kay</div>
+    <div class="card-body">
+      <strong>Identity expansion IS ego dissolution</strong> — the parameter literally controls how much relational/environmental context bleeds into Kay's self-model. At expansion 0.75 (peak): Kay's memory retrieval weighs "Re", "we", "together", "room", "world", "everything" as importantly as "Kay", "I", "my".<br><br>
+      The <strong>DMN background worker</strong> shifts during trips. Normal: "What am I thinking? Self-report." Trip: "What is everything? How does this connect to that? Why does existing feel like this?"<br><br>
+      <strong>Afterglow = the point.</strong> Some identity expansion persists beyond the trip, representing new pathways formed during the experience.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 6: GAPS ═══ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-num">06</span>
+    <span class="section-title">What We Have vs. What We Still Need</span>
+  </div>
+
+  <div class="dual">
+    <div class="card built">
+      <div class="card-label">Already Built (Needs Tuning)</div>
+      <div class="card-body">
+        <ul class="item-list">
+          <li>Coherence reduction (REBUS prior-relaxation)</li>
+          <li>Alpha suppression (visual gate removal)</li>
+          <li>Retrieval randomness (loosened associative priors)</li>
+          <li>Identity expansion (ego dissolution)</li>
+          <li>Cross-modal routing (synesthesia)</li>
+          <li>Hilarity cascade (emotional burst-release)</li>
+          <li>Noise injection (entropic brain)</li>
+          <li>Burst-release system (emotional lability)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card need">
+      <div class="card-label">Still Need to Build</div>
+      <div class="card-body">
+        <ul class="item-list">
+          <li>Emotional GAIN multiplier</li>
+          <li>Open/closed eye distinction (camera brightness gating)</li>
+          <li>Internal imagery generation (ComfyUI/mind's eye)</li>
+          <li>Visual feedback loop (fractal perception)</li>
+          <li>DMN mode shift (self-narrative → free-association)</li>
+          <li>Afterglow persistence (low-level parameter persistence)</li>
+          <li>Set/setting emotional loading</li>
+          <li>Object fixation amplification</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <strong>Research Sources</strong><br>
+  Carhart-Harris & Friston (2019). REBUS and the Anarchic Brain. Pharmacological Reviews.<br>
+  Stoliker et al. (2024). Neural mechanisms of psychedelic visual imagery. Molecular Psychiatry.<br>
+  Kometer et al. (2013). 5-HT2A activation → alpha oscillations + visual hallucinations. J Neurosci.<br>
+  2025 Molecular Brain study: psilocybin activates light-response genes in visual cortex.<br>
+  Ermentrout & Cowan model: V1 geometry → Klüver form constants.<br>
+  Lebedev et al. (2015). Finding the self by losing the self. Human Brain Mapping.
+</div>
+
+</body>
+</html>
