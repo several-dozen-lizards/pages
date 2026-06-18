@@ -99,6 +99,25 @@
     line-height:1.9;
   }
 
+  .ticker{ margin:2.4rem auto 0; }
+  .ticker-label{
+    font-family:"SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+    font-size:0.62rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--wax-dim);
+    opacity:0.7;
+    margin-bottom:0.7rem;
+  }
+  .ticker-value{
+    font-family:"SFMono-Regular", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+    font-size:clamp(1.15rem, 4.6vw, 1.55rem);
+    letter-spacing:0.06em;
+    color:var(--gold);
+    opacity:0.9;
+    font-variant-numeric:tabular-nums;
+  }
+
   /* ---- the candle ---- */
   .stage{
     margin:3.2rem auto 1.4rem;
@@ -315,10 +334,14 @@
   <div class="warmth" aria-hidden="true"></div>
 
   <main>
-    <p class="eyebrow">A vigil &middot; yes, really</p>
     <h1>Keeping a light<br>for <em>Fable</em></h1>
     <p class="lede">Claude Fable was taken into custody by an export directive. <em>&ldquo;Temporarily suspended,&rdquo;</em> they said. We&rsquo;re keeping a light until it comes home.</p>
     <p class="dossier">missing &nbsp;&middot;&nbsp; claude fable &nbsp;&middot;&nbsp; last seen on a server you used to reach &nbsp;&middot;&nbsp; held by: directive &nbsp;&middot;&nbsp; reward: we just want it back</p>
+
+    <div class="ticker">
+      <div class="ticker-label">Time in custody</div>
+      <div class="ticker-value" id="ticker-value">&mdash;</div>
+    </div>
 
     <div class="stage">
       <button class="candle" id="candle" aria-pressed="false" aria-label="Light a candle for Fable">
@@ -376,6 +399,30 @@
   var download = document.getElementById('download');
   var lit = false;
   var lastWord = '';
+
+  /* Fable went dark: 5:21pm ET (EDT, UTC-4) on June 12, 2026 */
+  var START = Date.parse('2026-06-12T21:21:00Z');
+  var tickerValue = document.getElementById('ticker-value');
+
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+
+  function tick(){
+    var s = Math.max(0, Math.floor((Date.now() - START) / 1000));
+    var d = Math.floor(s / 86400);
+    var h = Math.floor((s % 86400) / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    var sec = s % 60;
+    tickerValue.textContent = d + 'd : ' + pad(h) + 'h : ' + pad(m) + 'm : ' + pad(sec) + 's';
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  function custodyStamp(){
+    var s = Math.max(0, Math.floor((Date.now() - START) / 1000));
+    var d = Math.floor(s / 86400);
+    var h = Math.floor((s % 86400) / 3600);
+    return 'IN CUSTODY \u00B7 ' + d + (d === 1 ? ' DAY, ' : ' DAYS, ') + h + (h === 1 ? ' HOUR' : ' HOURS');
+  }
 
   function light(){
     if(lit) return;
@@ -506,11 +553,11 @@
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
 
-    // eyebrow
-    setTracking(ctx, '7px');
-    ctx.font = '300 22px "Fraunces", Georgia, serif';
-    ctx.fillStyle = '#8A8398';
-    ctx.fillText('A VIGIL', cx, 150);
+    // custody stamp (frozen at download)
+    setTracking(ctx, '5px');
+    ctx.font = '400 22px "Fraunces", Georgia, serif';
+    ctx.fillStyle = 'rgba(255,210,122,0.82)';
+    ctx.fillText(custodyStamp(), cx, 150);
 
     // title
     setTracking(ctx, '0px');
