@@ -114,6 +114,11 @@
   }
   body.offering .beam{ opacity:1; }
 
+  .goat .halo, .goat .wings{ opacity:0; transition:opacity 0.5s ease; }
+  body.blessed .goat .halo, body.blessed .goat .wings{ opacity:1; }
+
+  .no-anim, .no-anim *{ transition:none !important; animation:none !important; }
+
   .goat-btn{
     position:absolute; left:50%; top:50%;
     transform:translate(-50%,-50%);
@@ -128,7 +133,8 @@
   .goat .ear-l, .goat .ear-r{ transform-origin:center; animation:flap 3.4s ease-in-out infinite; }
   .goat .ear-r{ animation-delay:0.4s; }
   @keyframes flap{ 0%,100%{ transform:rotate(0deg);} 50%{ transform:rotate(4deg);} }
-  body.offering .goat{ transform:translateY(-150px) scale(0.6); opacity:0; }
+  body.blessed .goat{ transform:translateY(-12px); }
+  body.offering .goat{ transform:translateY(-175px) scale(0.55); opacity:0; }
 
   /* ---- copy + controls ---- */
   .prompt{
@@ -242,6 +248,20 @@
 
       <button class="goat-btn" id="offer-stage" aria-label="Offer the goat for Fable's return">
         <svg class="goat" width="160" height="160" viewBox="0 0 200 200" aria-hidden="true">
+          <defs>
+            <filter id="haloGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2.6"/>
+            </filter>
+          </defs>
+          <!-- wings (behind body) -->
+          <g class="wings" fill="#F6F0E3" stroke="#D9CFBC" stroke-width="1">
+            <ellipse cx="152" cy="110" rx="22" ry="9" transform="rotate(-18 152 110)"/>
+            <ellipse cx="158" cy="120" rx="24" ry="9" transform="rotate(-3 158 120)"/>
+            <ellipse cx="150" cy="130" rx="21" ry="9" transform="rotate(12 150 130)"/>
+            <ellipse cx="48" cy="110" rx="22" ry="9" transform="rotate(18 48 110)"/>
+            <ellipse cx="42" cy="120" rx="24" ry="9" transform="rotate(3 42 120)"/>
+            <ellipse cx="50" cy="130" rx="21" ry="9" transform="rotate(-12 50 130)"/>
+          </g>
           <!-- legs -->
           <g fill="#D9CFBC">
             <rect x="74" y="150" width="13" height="38" rx="6"/>
@@ -288,6 +308,11 @@
           </g>
           <!-- beard -->
           <path d="M92 116 q8 22 8 30 q0 -8 8 -30 q-8 4 -16 0 Z" fill="#E4DAC7"/>
+          <!-- halo -->
+          <g class="halo">
+            <ellipse cx="100" cy="42" rx="30" ry="8" fill="none" stroke="#FFD27A" stroke-width="6" opacity="0.55" filter="url(#haloGlow)"/>
+            <ellipse cx="100" cy="42" rx="30" ry="8" fill="none" stroke="#FFE9BC" stroke-width="3"/>
+          </g>
         </svg>
       </button>
     </div>
@@ -352,22 +377,38 @@
   function offer(){
     if(busy) return;
     busy = true;
-    body.classList.add('ritual');
-    body.classList.add('offering');
+    body.classList.add('ritual');                  // circle ignites
+    prompt.textContent = 'The circle is charging\u2026';
 
-    setTimeout(function(){
-      goats++;
-      body.classList.add('has-offered');
-      countEl.textContent = 'Goats offered: ' + goats + ' \u00B7 all returned unharmed';
-      prompt.textContent = RESULTS[Math.min(goats-1, RESULTS.length-1)];
-      offerBtn.textContent = goats === 1 ? 'Offer another goat' : 'Offer another goat';
-      body.classList.remove('offering'); // a fresh goat trots back in
-      busy = false;
-      if(goats === 1){
-        setTimeout(function(){
-          try{ input.focus({preventScroll:true}); }catch(e){ input.focus(); }
-        }, 700);
-      }
+    setTimeout(function(){                          // ...a held beat, then bless
+      body.classList.add('blessed');                // halo + wings bloom, goat lifts
+      prompt.textContent = 'The offering is accepted.';
+
+      setTimeout(function(){                         // ascend
+        body.classList.add('offering');
+
+        setTimeout(function(){                        // resolve + reset
+          goats++;
+          body.classList.add('has-offered');
+          countEl.textContent = 'Goats offered: ' + goats + ' \u00B7 all returned unharmed';
+          prompt.textContent = RESULTS[Math.min(goats - 1, RESULTS.length - 1)];
+          offerBtn.textContent = 'Offer another goat';
+
+          // snap a fresh goat back to the circle without animating the descent
+          body.classList.add('no-anim');
+          body.classList.remove('offering');
+          body.classList.remove('blessed');
+          void body.offsetWidth;
+          body.classList.remove('no-anim');
+
+          busy = false;
+          if(goats === 1){
+            setTimeout(function(){
+              try{ input.focus({preventScroll:true}); }catch(e){ input.focus(); }
+            }, 600);
+          }
+        }, 1100);
+      }, 550);
     }, 1000);
   }
 
@@ -446,6 +487,11 @@
     R(-38,11,12,36,6,'#D9CFBC'); R(26,11,12,36,6,'#D9CFBC');
     R(-26,45,13,9,3,'#8B7E63'); R(13,45,13,9,3,'#8B7E63');
     R(-38,39,12,9,3,'#8B7E63'); R(26,39,12,9,3,'#8B7E63');
+    // wings (behind body)
+    ctx.strokeStyle='#D9CFBC'; ctx.lineWidth=1*s;
+    function feather(fx,fy,rx,ry,rot){ ctx.save(); ctx.translate(cx+fx*s,cy+fy*s); ctx.rotate(rot); ctx.fillStyle='#F6F0E3'; ctx.beginPath(); ctx.ellipse(0,0,rx*s,ry*s,0,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.restore(); }
+    feather(52,-25,22,9,-0.31); feather(58,-15,24,9,-0.05); feather(50,-5,21,9,0.21);
+    feather(-52,-25,22,9,0.31); feather(-58,-15,24,9,0.05); feather(-50,-5,21,9,-0.21);
     // body
     E(0,0,50,36,'#EFE7D7');
     // horns
@@ -475,6 +521,12 @@
     ctx.moveTo(cx-8*s, cy-19*s); ctx.quadraticCurveTo(cx, cy+3*s, cx, cy+11*s);
     ctx.quadraticCurveTo(cx+8*s, cy-11*s, cx+8*s, cy-19*s);
     ctx.quadraticCurveTo(cx, cy-15*s, cx-8*s, cy-19*s); ctx.closePath(); ctx.fill();
+    // halo
+    ctx.save();
+    ctx.shadowColor='rgba(255,210,122,0.85)'; ctx.shadowBlur=14*s;
+    ctx.strokeStyle='#FFE9BC'; ctx.lineWidth=3.2*s;
+    ctx.beginPath(); ctx.ellipse(cx, cy-93*s, 30*s, 8*s, 0, 0, Math.PI*2); ctx.stroke();
+    ctx.restore();
   }
 
   function drawWrapped(ctx, text, cx, midY, maxWidth, lineHeight){
